@@ -34,8 +34,13 @@ public class Repository<T> {
 		this.cls = entityClass;
 	}
 
+	public void persist(T entity) {
+		if (!em.contains(entity)) {
+			em.persist(entity);
+		}
+	}
+
 	public T merge(T entity) {
-		System.out.println("sdf sd sd sdf s " + entity.getClass());
 		return em.merge(entity);
 	}
 
