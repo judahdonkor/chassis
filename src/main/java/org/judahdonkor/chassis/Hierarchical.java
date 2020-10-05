@@ -25,11 +25,11 @@ public interface Hierarchical {
             this(reposFcty, cls, rt -> rt.get("parent"));
         }
 
-        List<T> children(T entity) {
+        public List<T> children(T entity) {
             return repos.query((cb, rt, cq) -> cq.where(cb.equal(parent.apply(rt), entity))).getResultList();
         }
 
-        List<T> descendants(T entity) {
+        public List<T> descendants(T entity) {
             var desc = new ArrayList<T>();
             List<T> children = new ArrayList<>(children(entity));
             do {
