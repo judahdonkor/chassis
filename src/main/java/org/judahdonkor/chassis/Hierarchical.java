@@ -2,14 +2,47 @@ package org.judahdonkor.chassis;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
-public interface Hierarchical {
+public interface Hierarchical<T> {
+    T rootNode();
+
+    Optional<T> findNode(Predicate<T> predicate);
+
+    default boolean hasNode(Predicate<T> predicate) {
+        return findNode(predicate).isPresent();
+    }
+
+    public static <T> Hierarchical<T> traverse(T entity, UnaryOperator<T> parent) {
+        return new Hierarchical<T>() {
+
+            @Override
+            public T rootNode() {
+                return findNode(node -> parent.apply(node) == null).get();
+            }
+
+            @Override
+            public Optional<T> findNode(Predicate<T> predicate) {
+                T node = entity;
+                do {
+                    if (predicate.test(node))
+                        return Optional.of(node);
+                    node = parent.apply(node);
+                } while (node != null);
+                return Optional.empty();
+            }
+
+        };
+    }
+
     public static class Repository<T> {
         protected final org.judahdonkor.chassis.Repository<T> repos;
         protected final Function<Root<T>, Path<?>> parent;
