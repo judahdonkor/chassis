@@ -28,7 +28,7 @@ public interface Creation {
     <T> Discrimination<T> of(T discriminator);
 
     public static interface Discrimination<T> {
-        <U extends Entity<T>> void persist(U entity);
+        <U extends Entity<T>> void persist(U entity, String key);
 
         <U extends Entity<T>> List<U> list(Class<U> cls, String... keys);
 
@@ -37,7 +37,7 @@ public interface Creation {
         default <U extends Entity<T>> U entity(Class<U> cls, String key, Supplier<U> supplier) {
             return find(cls, key).orElseGet(() -> {
                 var entity = supplier.get();
-                persist(entity);
+                persist(entity, key);
                 return entity;
             });
         }
