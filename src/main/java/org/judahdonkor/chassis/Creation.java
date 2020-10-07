@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public interface Creation {
-    <T> void persist(T entity);
+    <T> void persist(T entity, String key);
 
     <T> List<T> list(Class<T> cls, String... keys);
 
@@ -14,7 +14,7 @@ public interface Creation {
     default <T> T entity(Class<T> cls, String key, Supplier<T> supplier) {
         return find(cls, key).orElseGet(() -> {
             var entity = supplier.get();
-            persist(entity);
+            persist(entity, key);
             return entity;
         });
     }
