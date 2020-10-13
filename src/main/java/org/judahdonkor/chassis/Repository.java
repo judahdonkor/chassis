@@ -48,8 +48,8 @@ public class Repository<T> {
 		return Optional.ofNullable(em.find(cls, id));
 	}
 
-	public void delete(Object id) {
-		delete((cb, rt, cd) -> cd.where(cb.equal(rt, id)));
+	public void delete(T entity) {
+		em.remove(entity);
 	}
 
 	public void delete(Delete<T> d) {
