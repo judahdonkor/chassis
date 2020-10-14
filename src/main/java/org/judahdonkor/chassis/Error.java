@@ -43,11 +43,22 @@ public class Error {
 	}
 
 	public JsonObject toJsonObject() {
-		var builder = Json.createObjectBuilder().add("context", context).add("title", title).add("detail", detail)
-				.add("suggestion", suggestion).add("reference", reference).add("about", about);
+		var obj = Json.createObjectBuilder();
+		if (context != null)
+			obj.add("context", context);
+		if (title != null)
+			obj.add("title", title);
+		if (detail != null)
+			obj.add("detail", detail);
+		if (suggestion != null)
+			obj.add("suggestion", suggestion);
+		if (reference != null)
+			obj.add("reference", reference);
+		if (about != null)
+			obj.add("about", about);
 		if (cause != null)
-			builder.add("cause", cause.toJsonObject());
-		return builder.build();
+			obj.add("cause", cause.toJsonObject());
+		return obj.build();
 	}
 
 	/**
