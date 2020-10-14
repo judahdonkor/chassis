@@ -1,5 +1,8 @@
 package org.judahdonkor.chassis;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -37,6 +40,14 @@ public class Error {
 	 */
 	public static Builder builder(String title) {
 		return new Builder().title(title);
+	}
+
+	public JsonObject toJsonObject() {
+		var builder = Json.createObjectBuilder().add("context", context).add("title", title).add("detail", detail)
+				.add("suggestion", suggestion).add("reference", reference).add("about", about);
+		if (cause != null)
+			builder.add("cause", cause.toJsonObject());
+		return builder.build();
 	}
 
 	/**
