@@ -48,7 +48,7 @@ public class Repository<T> {
 		return Optional.ofNullable(em.find(cls, id));
 	}
 
-	public void delete(T entity) {
+	public void remove(T entity) {
 		em.remove(entity);
 	}
 
