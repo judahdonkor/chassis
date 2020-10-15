@@ -52,6 +52,10 @@ public class Repository<T> {
 		em.remove(entity);
 	}
 
+	public void flush() {
+		em.flush();
+	}
+
 	public void delete(Delete<T> d) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaDelete<T> delete = cb.createCriteriaDelete(cls);
