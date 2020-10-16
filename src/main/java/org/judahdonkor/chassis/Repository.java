@@ -34,16 +34,6 @@ public class Repository<T> {
 		this.cls = entityClass;
 	}
 
-	public void persist(T entity) {
-		if (!em.contains(entity)) {
-			em.persist(entity);
-		}
-	}
-
-	public T merge(T entity) {
-		return em.merge(entity);
-	}
-
 	public Optional<T> find(Object id) {
 		return Optional.ofNullable(em.find(cls, id));
 	}
@@ -78,6 +68,12 @@ public class Repository<T> {
 
 		public EntityManager em() {
 			return entityManager;
+		}
+
+		public void persist(Object entity) {
+			if (!entityManager.contains(entity)) {
+				entityManager.persist(entity);
+			}
 		}
 
 	}
