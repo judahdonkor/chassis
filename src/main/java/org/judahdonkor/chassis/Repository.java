@@ -48,14 +48,6 @@ public class Repository<T> {
 		return Optional.ofNullable(em.find(cls, id));
 	}
 
-	public void remove(T entity) {
-		em.remove(entity);
-	}
-
-	public void flush() {
-		em.flush();
-	}
-
 	public void delete(Delete<T> d) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaDelete<T> delete = cb.createCriteriaDelete(cls);
@@ -82,6 +74,10 @@ public class Repository<T> {
 
 		public <T> Repository<T> of(Class<T> cls) {
 			return new Repository<>(entityManager, cls);
+		}
+
+		public EntityManager em() {
+			return entityManager;
 		}
 
 	}
