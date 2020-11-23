@@ -112,7 +112,7 @@ public class Repository<T> {
 
 	public static <T> Optional<T> optional(TypedQuery<T> tq) {
 		try {
-			return Optional.of(tq.getSingleResult());
+			return Optional.ofNullable(tq.getSingleResult());
 		} catch (NoResultException e) {
 			return Optional.empty();
 		}
