@@ -29,7 +29,7 @@ test {
 }
 
 group 'org.judahdonkor.chassis'
-version '1.0.0-alpha27'
+version '1.0.0-alpha28'
 
 java {
     withJavadocJar()

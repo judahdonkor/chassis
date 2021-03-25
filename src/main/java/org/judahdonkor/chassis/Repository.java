@@ -201,6 +201,10 @@ public class Repository<T> {
 			return (T) val;
 		}
 
+		public Object value() {
+			return val;
+		}
+
 		public static <T> ExpressionOrType<T> of(T val) {
 			return new ExpressionOrType<>(val);
 		}
