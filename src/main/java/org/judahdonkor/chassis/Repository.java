@@ -131,8 +131,9 @@ public class Repository<T> {
 	 * @param arg1
 	 * @return
 	 */
-	public static <T> Predicate inferEqualPredicate(Class<T> type, Expression<T> arg0, Object arg1) {
+	public static <T> Predicate inferEqualPredicate(Expression<T> arg0, Object arg1) {
 		var cb = CDI.current().select(EntityManager.class).get().getCriteriaBuilder();
-		return type.isAssignableFrom(arg1.getClass()) ? cb.equal(arg0, (Expression<T>) arg1) : cb.equal(arg0, arg1);
+		return Expression.class.isAssignableFrom(arg1.getClass()) ? cb.equal(arg0, (Expression<T>) arg1)
+				: cb.equal(arg0, arg1);
 	}
 }
