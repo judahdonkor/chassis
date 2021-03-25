@@ -140,13 +140,12 @@ public class Repository<T> {
 	 * {@link CriteriaBuilder}
 	 * 
 	 * @param <T>  type
-	 * @param type
 	 * @param arg0 in {@link CriteriaBuilder}.greaterThanOrEqualTo
 	 * @param arg1 {@link Expression} or {@link Object}
 	 * @return {@link Predicate}
 	 */
-	public static <T extends Comparable<? super T>> Predicate inferGreaterThanOrEqualToPredicate(Class<T> type,
-			Expression<T> arg0, Object arg1) {
+	public static <T extends Comparable<? super T>> Predicate inferGreaterThanOrEqualToPredicate(Expression<T> arg0,
+			Object arg1) {
 		var cb = CDI.current().select(EntityManager.class).get().getCriteriaBuilder();
 		return Expression.class.isAssignableFrom(arg1.getClass()) ? cb.greaterThanOrEqualTo(arg0, (Expression<T>) arg1)
 				: cb.greaterThanOrEqualTo(arg0, (T) arg1);
@@ -157,13 +156,12 @@ public class Repository<T> {
 	 * {@link CriteriaBuilder}
 	 * 
 	 * @param <T>  type
-	 * @param type
 	 * @param arg0 in {@link CriteriaBuilder}.lessThanOrEqualTo
 	 * @param arg1 {@link Expression} or {@link Object}
 	 * @return {@link Predicate}
 	 */
-	public static <T extends Comparable<? super T>> Predicate inferLessThanOrEqualToPredicate(Class<T> type,
-			Expression<T> arg0, Object arg1) {
+	public static <T extends Comparable<? super T>> Predicate inferLessThanOrEqualToPredicate(Expression<T> arg0,
+			Object arg1) {
 		var cb = CDI.current().select(EntityManager.class).get().getCriteriaBuilder();
 		return Expression.class.isAssignableFrom(arg1.getClass()) ? cb.lessThanOrEqualTo(arg0, (Expression<T>) arg1)
 				: cb.lessThanOrEqualTo(arg0, (T) arg1);
