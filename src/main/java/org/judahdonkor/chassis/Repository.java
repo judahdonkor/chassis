@@ -16,6 +16,9 @@ import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
+
+import lombok.NonNull;
 
 public class Repository<T> {
 	protected final EntityManager em;
@@ -165,5 +168,41 @@ public class Repository<T> {
 		var cb = CDI.current().select(EntityManager.class).get().getCriteriaBuilder();
 		return Expression.class.isAssignableFrom(arg1.getClass()) ? cb.lessThanOrEqualTo(arg0, (Expression<T>) arg1)
 				: cb.lessThanOrEqualTo(arg0, (T) arg1);
+	}
+
+	public static <T> ExpressionOrType<T> createExpressionOrType(T val) {
+		return new ExpressionOrType<>(val);
+	}
+
+	public static <T> ExpressionOrType<T> createExpressionOrType(Expression<T> val) {
+		return new ExpressionOrType<>(val);
+	}
+
+	public static class ExpressionOrType<T> {
+		private final Object val;
+
+		private ExpressionOrType(@NonNull T val) {
+			this.val = val;
+		}
+
+		private ExpressionOrType(@NonNull Expression<T> val) {
+			this.val = val;
+		}
+
+		public boolean isExpression() {
+			return Expression.class.isAssignableFrom(val.getClass());
+		};
+
+		public Expression<T> expression() {
+			if (!isExpression())
+				throw Beef.internal().as(b -> b.when("Returning expression").detail("Value not expression")).build();
+			return (Expression<T>) val;
+		};
+
+		public T type() {
+			if (isExpression())
+				throw Beef.internal().as(b -> b.when("Returning type").detail("Value is expression")).build();
+			return (T) val;
+		}
 	}
 }
