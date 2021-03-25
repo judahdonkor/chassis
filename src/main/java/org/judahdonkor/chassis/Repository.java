@@ -170,14 +170,6 @@ public class Repository<T> {
 				: cb.lessThanOrEqualTo(arg0, (T) arg1);
 	}
 
-	public static <T> ExpressionOrType<T> createExpressionOrType(T val) {
-		return new ExpressionOrType<>(val);
-	}
-
-	public static <T> ExpressionOrType<T> createExpressionOrType(Expression<T> val) {
-		return new ExpressionOrType<>(val);
-	}
-
 	public static class ExpressionOrType<T> {
 		private final Object val;
 
@@ -207,6 +199,14 @@ public class Repository<T> {
 			if (isExpression())
 				throw Beef.internal().as(b -> b.when("Returning type").detail("Value is expression")).build();
 			return (T) val;
+		}
+
+		public static <T> ExpressionOrType<T> of(T val) {
+			return new ExpressionOrType<>(val);
+		}
+
+		public static <T> ExpressionOrType<T> of(Expression<T> val) {
+			return new ExpressionOrType<>(val);
 		}
 	}
 }
