@@ -2,6 +2,7 @@ package org.judahdonkor.chassis;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Optional;
+import java.util.function.Function;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.CDI;
@@ -132,10 +133,9 @@ public class Repository<T> {
 	 * @param arg1 {@link Expression} or {@link Object}
 	 * @return {@link Predicate}
 	 */
-	public static <T> Predicate inferEqualPredicate(Expression<T> arg0, Object arg1) {
+	public static <T> Predicate inferEqualPredicate(Expression<T> arg0, ExpressionOrType<T> arg1) {
 		var cb = CDI.current().select(EntityManager.class).get().getCriteriaBuilder();
-		return Expression.class.isAssignableFrom(arg1.getClass()) ? cb.equal(arg0, (Expression<T>) arg1)
-				: cb.equal(arg0, (T) arg1);
+		return arg1.isExpression() ? cb.equal(arg0, arg1.expression()) : cb.equal(arg0, arg1.type());
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class Repository<T> {
 	 * @return {@link Predicate}
 	 */
 	public static <T extends Comparable<? super T>> Predicate inferGreaterThanOrEqualToPredicate(Expression<T> arg0,
-			Object arg1) {
+			ExpressionOrType<T> arg1) {
 		var cb = CDI.current().select(EntityManager.class).get().getCriteriaBuilder();
 		return Expression.class.isAssignableFrom(arg1.getClass()) ? cb.greaterThanOrEqualTo(arg0, (Expression<T>) arg1)
 				: cb.greaterThanOrEqualTo(arg0, (T) arg1);
@@ -164,7 +164,7 @@ public class Repository<T> {
 	 * @return {@link Predicate}
 	 */
 	public static <T extends Comparable<? super T>> Predicate inferLessThanOrEqualToPredicate(Expression<T> arg0,
-			Object arg1) {
+			ExpressionOrType<T> arg1) {
 		var cb = CDI.current().select(EntityManager.class).get().getCriteriaBuilder();
 		return Expression.class.isAssignableFrom(arg1.getClass()) ? cb.lessThanOrEqualTo(arg0, (Expression<T>) arg1)
 				: cb.lessThanOrEqualTo(arg0, (T) arg1);
@@ -192,6 +192,10 @@ public class Repository<T> {
 		public boolean isExpression() {
 			return Expression.class.isAssignableFrom(val.getClass());
 		};
+
+		public <U> U map(@NonNull Function<Expression<T>, U> expressionMapper, @NonNull Function<T, U> typeMapper) {
+			return isExpression() ? expressionMapper.apply(expression()) : typeMapper.apply(type());
+		}
 
 		public Expression<T> expression() {
 			if (!isExpression())
