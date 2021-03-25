@@ -4,6 +4,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -12,6 +13,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 public class Repository<T> {
@@ -116,5 +119,20 @@ public class Repository<T> {
 		} catch (NoResultException e) {
 			return Optional.empty();
 		}
+	}
+
+	/**
+	 * Convenience method to infer the right equal method to call on
+	 * {@link CriteriaBuilder}
+	 * 
+	 * @param <T>
+	 * @param type
+	 * @param arg0
+	 * @param arg1
+	 * @return
+	 */
+	public static <T> Predicate inferEqualPredicate(Class<T> type, Expression<T> arg0, Object arg1) {
+		var cb = CDI.current().select(EntityManager.class).get().getCriteriaBuilder();
+		return type.isAssignableFrom(arg1.getClass()) ? cb.equal(arg0, (Expression<T>) arg1) : cb.equal(arg0, arg1);
 	}
 }
