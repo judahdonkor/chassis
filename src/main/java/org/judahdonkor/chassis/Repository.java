@@ -125,15 +125,13 @@ public class Repository<T> {
 	 * Convenience method to infer the right equal method to call on
 	 * {@link CriteriaBuilder}
 	 * 
-	 * @param <T>
-	 * @param type
-	 * @param arg0
-	 * @param arg1
-	 * @return
+	 * @param arg0 in {@link CriteriaBuilder}.equal
+	 * @param arg1 {@link Expression} or {@link Object}
+	 * @return {@link Predicate}
 	 */
-	public static <T> Predicate inferEqualPredicate(Expression<T> arg0, Object arg1) {
+	public static Predicate inferEqualPredicate(Expression<?> arg0, Object arg1) {
 		var cb = CDI.current().select(EntityManager.class).get().getCriteriaBuilder();
-		return Expression.class.isAssignableFrom(arg1.getClass()) ? cb.equal(arg0, (Expression<T>) arg1)
+		return Expression.class.isAssignableFrom(arg1.getClass()) ? cb.equal(arg0, (Expression<?>) arg1)
 				: cb.equal(arg0, arg1);
 	}
 }
